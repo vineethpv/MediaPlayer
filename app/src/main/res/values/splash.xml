@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Player.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFD000FF</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/media3_icon_circular_play</item>
+        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+    </style>
+</resources>
