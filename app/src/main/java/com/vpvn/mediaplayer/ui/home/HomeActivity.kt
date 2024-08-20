@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.vpvn.mediaplayer.R
 import com.vpvn.mediaplayer.ui.theme.MediaPlayerTheme
@@ -56,21 +57,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.purple_200))
-            .wrapContentSize(Alignment.Center)
-    ) {
-        Text(
-            text = "Home View",
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 25.sp
-        )
-    }
+    val viewModel = viewModel<HomeViewModel>()
+    MediaDirectoriesListScreen(directories = viewModel.getMediaDirectories())
 }
 
 @Composable

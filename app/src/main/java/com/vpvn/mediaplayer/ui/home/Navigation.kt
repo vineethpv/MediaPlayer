@@ -1,17 +1,20 @@
 package com.vpvn.mediaplayer.ui.home
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.vpvn.mediaplayer.R
@@ -48,7 +51,7 @@ fun BottomNavigationBar(navController: NavController) {
                 icon = {
                     Icon(
                         painterResource(id = item.icon),
-                        contentDescription = item.title
+                        contentDescription = item.title, modifier = Modifier.size(56.dp)
                     )
                 },
                 label = { Text(text = item.title) },
