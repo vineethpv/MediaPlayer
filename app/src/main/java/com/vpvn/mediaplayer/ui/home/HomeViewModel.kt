@@ -34,10 +34,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getMediaFolders(): List<MediaDirectory> {
-        val map = mutableMapOf<String, Int>()
-        val folderNameList = mutableListOf<MediaDirectory>()
+        val map = mutableMapOf<String, MediaDirectory>()
         val cursor: Cursor?
-        var columnIndexData = 0
+        var columnIndexData: Int
 
         val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Video.VideoColumns.DATA)
@@ -46,22 +45,20 @@ class HomeViewModel @Inject constructor(
         cursor?.let { cur ->
             columnIndexData = cur.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
             while (cur.moveToNext()) {
-                val absolutePathOfImage = cur.getString(columnIndexData)
-                val fileName: String = File(absolutePathOfImage).parentFile?.name ?: ""
+                val absolutePath = cur.getString(columnIndexData)
+                val folderName: String = File(absolutePath).parentFile?.name ?: ""
 
-                if (map.containsKey(fileName)) {
-                    map[fileName] = map.getValue(fileName) + 1
+                if (map.containsKey(folderName)) {
+                    with(map.getValue(folderName)) { videoCount += 1 }
                 } else {
-                    map[fileName] = 1
+                    val folderPath = absolutePath.substringBeforeLast(delimiter = "/")
+                    map[folderName] = MediaDirectory(folderName, 1, folderPath)
                 }
 
             }
             cur.close()
         }
 
-        map.forEach { (key, value) ->
-            folderNameList.add(MediaDirectory(key, value))
-        }
-        return folderNameList.sortedBy { it.folderName }
+        return map.values.sortedBy { it.folderName }
     }
 }

@@ -30,7 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vpvn.mediaplayer.R
 
-data class MediaDirectory(val folderName: String, val videoCount: Int)
+data class MediaDirectory(
+    val folderName: String,
+    var videoCount: Int,
+    val path: String
+)
 
 @Composable
 fun HomeScreen(onItemClick: (String) -> Unit) {
@@ -66,10 +70,13 @@ fun MediaDirectoriesList(
 
         }
         items(directories) { directory ->
-            DirectoryCardItem(name = directory.folderName, directory.videoCount, onItemClick = { name ->
-                Log.d("vineeth", "$name clicked")
-                onItemClick(name)
-            })
+            DirectoryCardItem(
+                name = directory.folderName,
+                directory.videoCount,
+                onItemClick = { name ->
+                    Log.d("vineeth", "$name clicked")
+                    onItemClick(name)
+                })
         }
     }
 }
