@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,12 +30,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vpvn.mediaplayer.R
 
-data class MediaDirectory(val folderName: String)
+data class MediaDirectory(val folderName: String, val videoCount: Int)
 
 @Composable
 fun HomeScreen(onItemClick: (String) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
-    MediaDirectoriesList(directories = viewModel.getMediaDirectories(), onItemClick)
+    val directoryList = viewModel.mediaDirectoriesLiveData.observeAsState().value
+    directoryList?.let { MediaDirectoriesList(directories = it, onItemClick) }
 }
 
 @Composable
@@ -63,7 +66,7 @@ fun MediaDirectoriesList(
 
         }
         items(directories) { directory ->
-            DirectoryCardItem(name = directory.folderName, onItemClick = { name ->
+            DirectoryCardItem(name = directory.folderName, directory.videoCount, onItemClick = { name ->
                 Log.d("vineeth", "$name clicked")
                 onItemClick(name)
             })
@@ -73,7 +76,7 @@ fun MediaDirectoriesList(
 
 
 @Composable
-fun DirectoryCardItem(name: String, onItemClick: (String) -> Unit) {
+fun DirectoryCardItem(name: String, count: Int, onItemClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,11 +95,18 @@ fun DirectoryCardItem(name: String, onItemClick: (String) -> Unit) {
                 contentDescription = null,
                 modifier = Modifier.size(56.dp)
             )
-            Text(
-                text = name,
-                color = Color.Black,
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            )
+            Column {
+                Text(
+                    text = name,
+                    color = Color.Black,
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+                )
+                Text(
+                    text = "$count videos",
+                    color = Color.Gray,
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
+                )
+            }
         }
 
     }
