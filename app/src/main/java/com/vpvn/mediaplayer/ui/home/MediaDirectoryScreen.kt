@@ -25,12 +25,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vpvn.mediaplayer.R
 
 data class MediaDirectory(val folderName: String)
 
 @Composable
-fun MediaDirectoriesListScreen(directories: List<MediaDirectory>) {
+fun HomeScreen(onItemClick: (String) -> Unit) {
+    val viewModel: HomeViewModel = hiltViewModel()
+    MediaDirectoriesList(directories = viewModel.getMediaDirectories(), onItemClick)
+}
+
+@Composable
+fun MediaDirectoriesList(
+    directories: List<MediaDirectory>,
+    onItemClick: (String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
@@ -53,8 +63,9 @@ fun MediaDirectoriesListScreen(directories: List<MediaDirectory>) {
 
         }
         items(directories) { directory ->
-            DirectoryCard(name = directory.folderName, onItemClick = { name ->
+            DirectoryCardItem(name = directory.folderName, onItemClick = { name ->
                 Log.d("vineeth", "$name clicked")
+                onItemClick(name)
             })
         }
     }
@@ -62,7 +73,7 @@ fun MediaDirectoriesListScreen(directories: List<MediaDirectory>) {
 
 
 @Composable
-fun DirectoryCard(name: String, onItemClick: (String) -> Unit) {
+fun DirectoryCardItem(name: String, onItemClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

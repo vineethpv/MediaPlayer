@@ -19,18 +19,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.vpvn.mediaplayer.R
 
-sealed class Destinations(var route: String, var icon: Int, var title: String) {
-    data object Home : Destinations("home", R.drawable.ic_launcher_foreground, "Home")
-    data object Music : Destinations("music", R.drawable.ic_launcher_foreground, "Music")
+sealed class BottomDestination(var route: String, var icon: Int, var title: String) {
+    data object Home : BottomDestination("home", R.drawable.ic_launcher_foreground, "Home")
+    data object Music : BottomDestination("music", R.drawable.ic_launcher_foreground, "Music")
 }
 
 @Composable
-fun HostContent(navController: NavHostController) {
-    NavHost(navController, startDestination = Destinations.Home.route) {
-        composable(Destinations.Home.route) {
-            HomeScreen()
+fun BottomNavContent(navController: NavHostController, onItemClick: (String) -> Unit) {
+    NavHost(navController, startDestination = BottomDestination.Home.route) {
+        composable(BottomDestination.Home.route) {
+            HomeScreen(onItemClick = onItemClick)
         }
-        composable(Destinations.Music.route) {
+        composable(BottomDestination.Music.route) {
             MusicScreen()
         }
     }
@@ -38,7 +38,7 @@ fun HostContent(navController: NavHostController) {
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    val destinations = listOf(Destinations.Home, Destinations.Music)
+    val destinations = listOf(BottomDestination.Home, BottomDestination.Music)
 
     BottomNavigation(
         backgroundColor = colorResource(id = R.color.white),
