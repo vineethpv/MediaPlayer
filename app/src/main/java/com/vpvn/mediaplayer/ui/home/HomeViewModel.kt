@@ -1,7 +1,6 @@
 package com.vpvn.mediaplayer.ui.home
 
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
@@ -35,15 +34,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getMediaFolders(): List<MediaDirectory> {
         val map = mutableMapOf<String, MediaDirectory>()
-        val cursor: Cursor?
-        var columnIndexData: Int
 
         val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Video.VideoColumns.DATA)
-        cursor = context.contentResolver.query(uri, projection, null, null, null)
+        val cursor = context.contentResolver.query(uri, projection, null, null, null)
 
         cursor?.let { cur ->
-            columnIndexData = cur.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
+            val columnIndexData = cur.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
             while (cur.moveToNext()) {
                 val absolutePath = cur.getString(columnIndexData)
                 val folderName: String = File(absolutePath).parentFile?.name ?: ""
