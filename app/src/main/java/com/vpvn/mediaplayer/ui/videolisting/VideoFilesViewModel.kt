@@ -6,12 +6,14 @@ import android.provider.MediaStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpvn.mediaplayer.NavRouteConstants
+import com.vpvn.mediaplayer.Singleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,17 +25,18 @@ class VideoFilesViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    val directoryNameState: StateFlow<String> = savedStateHandle.getStateFlow("directoryPath", "")
-    val videoFilesUiState = directoryNameState
-        .map { VideoFilesUiState.Success(getVideoFilesFrom(it)) }
+    val directoryNameState: StateFlow<String> = savedStateHandle.getStateFlow(NavRouteConstants.DIRECTORY_NAME, "")
+    private val absolutePath = Singleton.absolutePath //savedStateHandle.get<String>(NavRouteConstants.ABSOLUTE_PATH)
+    val videoFilesUiState = MutableStateFlow(VideoFilesUiState.Success(getVideoFilesFrom(absolutePath)))
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(0),
             initialValue = VideoFilesUiState.Loading
         )
 
-    private fun getVideoFilesFrom(folderPath: String): List<VideoFiles> {
-        val videoFiles = mutableListOf<VideoFiles>()
+    private fun getVideoFilesFrom(folderPath: String): List<VideoFile> {
+        println("vineeth - getVideoFilesFrom :: $folderPath")
+        val videoFiles = mutableListOf<VideoFile>()
         viewModelScope.launch(Dispatchers.IO) {
             val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             val projection = arrayOf(
@@ -56,7 +59,8 @@ class VideoFilesViewModel @Inject constructor(
                         val displayName = cursor.getString(columnIndexDisplayName)
                         val duration = cursor.getInt(columnIndexDuration)
 
-                        videoFiles.add(VideoFiles(id, displayName, duration.toString()))
+                        val url = "$folderPath/$displayName"
+                        videoFiles.add(VideoFile(id, url, displayName.substringBefore("."), duration.toString()))
                     }
 
                     cursor.close()
@@ -66,13 +70,14 @@ class VideoFilesViewModel @Inject constructor(
     }
 }
 
-data class VideoFiles(
+data class VideoFile(
     val id: Int,
+    val url: String,
     val displayName: String,
     val duration: String
 )
 
 sealed interface VideoFilesUiState {
-    data class Success(val videoFiles: List<VideoFiles>) : VideoFilesUiState
+    data class Success(val videoFiles: List<VideoFile>) : VideoFilesUiState
     data object Loading : VideoFilesUiState
 }

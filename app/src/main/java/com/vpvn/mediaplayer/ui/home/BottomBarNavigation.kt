@@ -25,7 +25,7 @@ sealed class BottomDestination(var route: String, var icon: Int, var title: Stri
 }
 
 @Composable
-fun BottomNavContent(navController: NavHostController, onItemClick: (String) -> Unit) {
+fun BottomNavContent(navController: NavHostController, onItemClick: (Pair<String, String>) -> Unit) {
     NavHost(navController, startDestination = BottomDestination.Home.route) {
         composable(BottomDestination.Home.route) {
             HomeScreen(onItemClick = onItemClick)

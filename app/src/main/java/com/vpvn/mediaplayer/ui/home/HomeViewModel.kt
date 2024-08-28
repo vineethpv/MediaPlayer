@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,6 +51,7 @@ class HomeViewModel @Inject constructor(
                     with(map.getValue(folderName)) { videoCount += 1 }
                 } else {
                     val folderPath = absolutePath.substringBeforeLast(delimiter = "/")
+                    val encodedPath = URLEncoder.encode(folderPath, StandardCharsets.UTF_8.toString())
                     map[folderName] = MediaDirectory(folderName, 1, folderPath)
                 }
 

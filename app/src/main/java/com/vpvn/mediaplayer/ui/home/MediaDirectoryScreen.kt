@@ -37,7 +37,7 @@ data class MediaDirectory(
 )
 
 @Composable
-fun HomeScreen(onItemClick: (String) -> Unit) {
+fun HomeScreen(onItemClick: (Pair<String, String>) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
     val directoryList = viewModel.mediaDirectoriesLiveData.observeAsState().value
     directoryList?.let { MediaDirectoriesList(directories = it, onItemClick) }
@@ -46,7 +46,7 @@ fun HomeScreen(onItemClick: (String) -> Unit) {
 @Composable
 fun MediaDirectoriesList(
     directories: List<MediaDirectory>,
-    onItemClick: (String) -> Unit
+    onItemClick: (Pair<String, String>) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -72,10 +72,11 @@ fun MediaDirectoriesList(
         items(directories) { directory ->
             DirectoryCardItem(
                 name = directory.folderName,
+                path = directory.path,
                 directory.videoCount,
-                onItemClick = { name ->
-                    Log.d("vineeth", "$name clicked")
-                    onItemClick(name)
+                onItemClick = { namePathPair ->
+                    Log.d("vineeth", "${namePathPair.first} clicked")
+                    onItemClick(namePathPair)
                 })
         }
     }
@@ -83,12 +84,16 @@ fun MediaDirectoriesList(
 
 
 @Composable
-fun DirectoryCardItem(name: String, count: Int, onItemClick: (String) -> Unit) {
+fun DirectoryCardItem(
+    name: String,
+    path: String,
+    count: Int,
+    onItemClick: (Pair<String, String>) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clickable { onItemClick(name) }
+            .clickable { onItemClick(Pair(name, path)) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)

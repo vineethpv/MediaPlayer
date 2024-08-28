@@ -11,11 +11,11 @@ sealed class Screen(
     data object Home : Screen("home")
 
     data object VideoListing : Screen(
-        route = "videoListing/{directoryPath}",
-        navArguments = listOf(navArgument("directoryPath") {
-            type = NavType.StringType
-        })
+        route = "videoListing/{${NavRouteConstants.DIRECTORY_NAME}}",
+        navArguments = listOf(
+            navArgument(NavRouteConstants.DIRECTORY_NAME) { type = NavType.StringType })
     ) {
-        fun createRoute(directoryPath: String) = "videoListing/${directoryPath}"
+        fun createRoute(directoryName: String, absolutePath: String) =
+            "videoListing/${directoryName}"
     }
 }
