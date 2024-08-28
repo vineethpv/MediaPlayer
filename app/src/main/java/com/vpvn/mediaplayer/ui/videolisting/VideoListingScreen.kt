@@ -1,7 +1,9 @@
 package com.vpvn.mediaplayer.ui.videolisting
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,17 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.decode.VideoFrameDecoder
 import com.vpvn.mediaplayer.R
 
 
@@ -106,9 +106,6 @@ fun VideoFilesScreen(
 
 @Composable
 fun VideoFileList(videoList: List<VideoFile>, innerPadding: PaddingValues) {
-    val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .components { add(VideoFrameDecoder.Factory()) }
-        .build()
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
@@ -133,7 +130,6 @@ fun VideoFileList(videoList: List<VideoFile>, innerPadding: PaddingValues) {
         items(videoList) { videoFile ->
             VideoCardItem(
                 videoFile = videoFile,
-                imageLoader = imageLoader,
                 onItemClick = { name ->
                     //Log.d("vineeth", "$name clicked")
                 })
@@ -144,7 +140,6 @@ fun VideoFileList(videoList: List<VideoFile>, innerPadding: PaddingValues) {
 @Composable
 fun VideoCardItem(
     videoFile: VideoFile,
-    imageLoader: ImageLoader,
     onItemClick: (String) -> Unit
 ) {
 
@@ -161,29 +156,69 @@ fun VideoCardItem(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AsyncImage(
-                model = videoFile.url,
-                imageLoader = imageLoader,
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                alignment = Alignment.Center,
-                modifier = Modifier
-                    .size(80.dp, 60.dp)
-                    .clip(RoundedCornerShape(3.dp))
+            Thumbnail(
+                url = videoFile.url,
+                duration = videoFile.duration
             )
-            Column(modifier = Modifier.padding(5.dp)) {
-                Text(
-                    text = videoFile.displayName,
-                    color = Color.Black,
-                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Normal)
-                )
-                Text(
-                    text = videoFile.duration,
-                    color = Color.Gray,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
-                )
-            }
+            TextColumn(
+                name = videoFile.displayName,
+                date = videoFile.date
+            )
         }
 
+    }
+}
+
+@Preview
+@Composable
+fun TextColumn(
+    name: String = "VID-20190727-WA0019",
+    date: String = "11/08/2021"
+) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = name,
+            color = Color.Black,
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
+        )
+        Text(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .background(color = Color.LightGray),
+            text = date,
+            color = Color.Black,
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Normal)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun Thumbnail(
+    url: String = "",
+    duration: String = "09:06"
+) {
+    Box(contentAlignment = Alignment.BottomEnd) {
+        AsyncImage(
+            model = url,
+            contentScale = ContentScale.Crop,
+            contentDescription = null,
+            alignment = Alignment.Center,
+            modifier = Modifier
+                .size(95.dp, 70.dp)
+                .clip(RoundedCornerShape(topStart = 2.dp, bottomStart = 2.dp))
+        )
+        Text(
+            text = duration,
+            modifier = Modifier
+                .padding(2.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(color = Color.Black)
+                .padding(start = 2.dp, end = 2.dp, top = 1.dp, bottom = 1.dp),
+            style = TextStyle(
+                fontSize = 8.sp,
+                color = Color.White
+            )
+        )
     }
 }

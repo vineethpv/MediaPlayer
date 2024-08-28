@@ -16,6 +16,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -42,7 +46,8 @@ class VideoFilesViewModel @Inject constructor(
             val projection = arrayOf(
                 MediaStore.Video.Media._ID,
                 MediaStore.Video.Media.DISPLAY_NAME,
-                MediaStore.Video.Media.DURATION
+                MediaStore.Video.Media.DURATION,
+                MediaStore.Video.Media.DATE_ADDED
             )
             val sortOrder = MediaStore.Video.Media.DATE_ADDED + " DESC"
             val selection = MediaStore.Video.Media.DATA + " like?"
@@ -53,20 +58,45 @@ class VideoFilesViewModel @Inject constructor(
                     val columnIndexID = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
                     val columnIndexDisplayName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
                     val columnIndexDuration = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+                    val columnIndexDateAdded = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
 
                     while (cursor.moveToNext()) {
                         val id = cursor.getInt(columnIndexID)
                         val displayName = cursor.getString(columnIndexDisplayName)
-                        val duration = cursor.getInt(columnIndexDuration)
+                        val duration = cursor.getLong(columnIndexDuration)
+                        val dateAdded = cursor.getLong(columnIndexDateAdded)
 
-                        val url = "$folderPath/$displayName"
-                        videoFiles.add(VideoFile(id, url, displayName.substringBefore("."), duration.toString()))
+                        videoFiles.add(
+                            VideoFile(
+                                id,
+                                buildUrl(folderPath, displayName),
+                                formatDisplayName(displayName),
+                                formatDuration(duration),
+                                formatDate(dateAdded)
+                            )
+                        )
                     }
-
                     cursor.close()
                 }
         }
         return videoFiles
+    }
+
+    private fun formatDate(dateInSeconds: Long): String {
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(dateInSeconds * 1000))
+    }
+
+    private fun buildUrl(path: String, name:String) = "$path/$name"
+
+    private fun formatDisplayName(displayName: String) = displayName.substringBefore(".")
+
+    private fun formatDuration(duration: Long): String {
+        return String.format(
+            Locale.getDefault(),
+            "%02d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(duration),
+            TimeUnit.MILLISECONDS.toSeconds(duration) % 60
+        )
     }
 }
 
@@ -74,7 +104,8 @@ data class VideoFile(
     val id: Int,
     val url: String,
     val displayName: String,
-    val duration: String
+    val duration: String,
+    val date: String
 )
 
 sealed interface VideoFilesUiState {
