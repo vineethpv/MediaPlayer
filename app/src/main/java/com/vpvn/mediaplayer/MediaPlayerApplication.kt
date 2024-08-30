@@ -9,12 +9,14 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.Dispatchers
 
 @HiltAndroidApp
 class MediaPlayerApplication : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader(this).newBuilder()
+            .dispatcher(Dispatchers.IO)
             .components { add(VideoFrameDecoder.Factory()) }
             .memoryCachePolicy(CachePolicy.ENABLED)
             .memoryCache {

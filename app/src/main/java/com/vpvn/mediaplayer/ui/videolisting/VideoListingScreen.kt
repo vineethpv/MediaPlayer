@@ -46,6 +46,7 @@ import com.vpvn.mediaplayer.R
 @Composable
 fun VideoFilesScreen(
     onBackClick: () -> Unit,
+    onItemClick: (String) -> Unit,
     viewModel: VideoFilesViewModel = hiltViewModel()
 ) {
     val directoryName by viewModel.directoryNameState.collectAsStateWithLifecycle()
@@ -53,6 +54,7 @@ fun VideoFilesScreen(
 
     VideoFilesScreen(
         onBackClick = onBackClick,
+        onItemClick = onItemClick,
         directoryName = directoryName,
         videoFilesState = videoFilesState
     )
@@ -62,6 +64,7 @@ fun VideoFilesScreen(
 @Composable
 fun VideoFilesScreen(
     onBackClick: () -> Unit,
+    onItemClick: (String) -> Unit,
     directoryName: String,
     videoFilesState: VideoFilesUiState
 ) {
@@ -90,12 +93,14 @@ fun VideoFilesScreen(
                 VideoFilesUiState.Loading -> {
                     Text(
                         text = stringResource(id = R.string.loading),
+                        style = TextStyle(color = Color.Red)
                     )
                 }
 
                 is VideoFilesUiState.Success -> {
                     VideoFileList(
                         videoList = videoFilesState.videoFiles,
+                        onItemClick = onItemClick,
                         innerPadding = innerPadding
                     )
                 }
@@ -105,7 +110,10 @@ fun VideoFilesScreen(
 }
 
 @Composable
-fun VideoFileList(videoList: List<VideoFile>, innerPadding: PaddingValues) {
+fun VideoFileList(
+    videoList: List<VideoFile>,
+    onItemClick: (String) -> Unit,
+    innerPadding: PaddingValues) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
@@ -130,8 +138,8 @@ fun VideoFileList(videoList: List<VideoFile>, innerPadding: PaddingValues) {
         items(videoList) { videoFile ->
             VideoCardItem(
                 videoFile = videoFile,
-                onItemClick = { name ->
-                    //Log.d("vineeth", "$name clicked")
+                onItemClick = { url ->
+                    onItemClick(url)
                 })
         }
     }
@@ -148,7 +156,7 @@ fun VideoCardItem(
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.CenterVertically)
             .padding(8.dp)
-            .clickable { onItemClick(videoFile.displayName) },
+            .clickable { onItemClick(videoFile.url) },
         shape = RoundedCornerShape(2.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {

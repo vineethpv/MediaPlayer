@@ -10,6 +10,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.vpvn.mediaplayer.Screen
 import com.vpvn.mediaplayer.Singleton
+import com.vpvn.mediaplayer.ui.player.PlayerScreen
 import com.vpvn.mediaplayer.ui.videolisting.VideoFilesScreen
 
 
@@ -41,9 +42,21 @@ fun MediaPlayerNavHost(navController: NavHostController) {
         }
 
         composable(route = Screen.VideoListing.route) {
-            VideoFilesScreen(onBackClick = {
-                navController.navigateUp()
-            })
+            VideoFilesScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onItemClick = { uri ->
+                    navController.navigate(
+                        Screen.Player.createRoute(
+                            itemUri = uri
+                        )
+                    )
+                })
+        }
+
+        composable(route = Screen.Player.route) {
+            PlayerScreen()
         }
     }
 }
