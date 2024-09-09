@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun HomeBottomNavigationScreen(onItemClick: (Pair<String, String>) -> Unit) {
+fun HomeBottomNavigationScreen(onItemClick: (String, String) -> Unit) {
     val bottomNavController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = bottomNavController) },

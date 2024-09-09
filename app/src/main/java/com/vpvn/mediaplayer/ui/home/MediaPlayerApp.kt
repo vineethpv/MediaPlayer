@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.vpvn.mediaplayer.Screen
-import com.vpvn.mediaplayer.Singleton
 import com.vpvn.mediaplayer.ui.player.PlayerScreen
 import com.vpvn.mediaplayer.ui.videolisting.VideoFilesScreen
 
@@ -30,12 +29,11 @@ fun MediaPlayerApp() {
 fun MediaPlayerNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeBottomNavigationScreen(onItemClick = { pair ->
-                Singleton.absolutePath = pair.second
+            HomeBottomNavigationScreen(onItemClick = { name, path ->
                 navController.navigate(
                     Screen.VideoListing.createRoute(
-                        directoryName = pair.first,
-                        absolutePath = pair.second
+                        directoryName = name,
+                        absolutePath = path
                     )
                 )
             })

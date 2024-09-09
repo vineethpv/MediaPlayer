@@ -30,7 +30,7 @@ class VideoFilesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val directoryNameState: StateFlow<String> = savedStateHandle.getStateFlow(NavRouteConstants.DIRECTORY_NAME, "")
-    private val absolutePath = Singleton.absolutePath //savedStateHandle.get<String>(NavRouteConstants.ABSOLUTE_PATH)
+    private val absolutePath = savedStateHandle.get<String>(NavRouteConstants.ABSOLUTE_PATH) ?: ""
     val videoFilesUiState = MutableStateFlow(VideoFilesUiState.Success(getVideoFilesFrom(absolutePath)))
         .stateIn(
             scope = viewModelScope,
