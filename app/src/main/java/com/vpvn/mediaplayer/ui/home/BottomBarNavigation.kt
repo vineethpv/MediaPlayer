@@ -31,7 +31,7 @@ fun BottomNavContent(navController: NavHostController, onItemClick: (String, Str
             HomeScreen(onItemClick = onItemClick)
         }
         composable(BottomDestination.Music.route) {
-            MusicScreen()
+            MusicScreen(onItemClick = onItemClick)
         }
     }
 }

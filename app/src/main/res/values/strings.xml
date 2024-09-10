@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MediaPlayer</string>
     <string name="loading">Loading…</string>
+    <string name="video_loading_failed">oops, video loading failed</string>
 </resources>
