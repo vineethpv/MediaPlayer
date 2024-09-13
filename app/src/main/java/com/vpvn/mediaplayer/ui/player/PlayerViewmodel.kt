@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpvn.mediaplayer.NavRouteConstants
+import com.vpvn.mediaplayer.extension.stateInWhileSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +21,7 @@ class PlayerViewmodel @Inject constructor(
 
     private val mediaItemUri = savedStateHandle.get<String>(NavRouteConstants.MEDIA_ITEM_URI) ?: ""
     private val _videoInfoState: MutableStateFlow<VideoPlayerUiState> = MutableStateFlow(VideoPlayerUiState.Loading)
-    val videoInfoState = _videoInfoState.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(0),
-        initialValue = VideoPlayerUiState.Loading
-    )
+    val videoInfoState = _videoInfoState.stateInWhileSubscribed(initialValue = VideoPlayerUiState.Loading)
 
     init {
         extractVideoInfo(mediaItemUri)
@@ -43,17 +40,25 @@ class PlayerViewmodel @Inject constructor(
             val width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
             val height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
             println("vineeth - getVideoInfoState :: rotation - $rotation  width - $width  height - $height")
-            return VideoPlayerUiState.Success(VideoInfo(uri, getOrientation(rotation)))
+            return VideoPlayerUiState.Success(VideoInfo(uri, getOrientation(width, height)))
         } catch (e: Exception) {
             return VideoPlayerUiState.LoadingFailed
         }
     }
 
-    private fun getOrientation(rotation: String?) = when (rotation) {
+    private fun getOrientation(width: String?, height: String?): ORIENTATION {
+        /*if (width != null && height != null) {
+            return if (width.toInt() > height.toInt()) ORIENTATION.PORTRAIT
+            else ORIENTATION.LANDSCAPE
+        }*/
+        return ORIENTATION.PORTRAIT
+    }
+
+    /*private fun getOrientation(rotation: String?) = when (rotation) {
         "0", "360" -> ORIENTATION.PORTRAIT
         "180", "270" -> ORIENTATION.LANDSCAPE
         else -> ORIENTATION.PORTRAIT
-    }
+    }*/
 
 }
 

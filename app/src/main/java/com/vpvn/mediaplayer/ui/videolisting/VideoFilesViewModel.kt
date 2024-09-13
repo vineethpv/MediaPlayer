@@ -7,13 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpvn.mediaplayer.NavRouteConstants
+import com.vpvn.mediaplayer.extension.stateInWhileSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,14 +29,10 @@ class VideoFilesViewModel @Inject constructor(
 
     val directoryNameState: StateFlow<String> = savedStateHandle.getStateFlow(NavRouteConstants.DIRECTORY_NAME, "")
     private val absolutePath = savedStateHandle.get<String>(NavRouteConstants.ABSOLUTE_PATH) ?: ""
-    val videoFilesUiState = MutableStateFlow(VideoFilesUiState.Success(getVideoFilesFrom(absolutePath)))
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(0),
-            initialValue = VideoFilesUiState.Loading
-        )
+    val videoFilesUiState =
+        MutableStateFlow(getVideoFilesFrom(absolutePath)).stateInWhileSubscribed(initialValue = VideoFilesUiState.Loading)
 
-    private fun getVideoFilesFrom(folderPath: String): List<VideoFile> {
+    private fun getVideoFilesFrom(folderPath: String): VideoFilesUiState {
         println("vineeth - getVideoFilesFrom :: $folderPath")
         val videoFiles = mutableListOf<VideoFile>()
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,7 +73,7 @@ class VideoFilesViewModel @Inject constructor(
                     cursor.close()
                 }
         }
-        return videoFiles
+        return VideoFilesUiState.Success(videoFiles)
     }
 
     private fun formatDate(dateInSeconds: Long): String {

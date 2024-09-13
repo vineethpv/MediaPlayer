@@ -1,12 +1,12 @@
 package com.vpvn.mediaplayer.ui.player
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Surface
@@ -37,12 +37,12 @@ fun PlayerScreen(
 ) {
     val videoInfoState by viewmodel.videoInfoState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    EnableSystemUi(show = false)
+    EnableSystemUi()
     when (val state = videoInfoState) {
         is VideoPlayerUiState.Success -> {
             println("vineeth - PlayerScreen :: uri - ${state.videoInfo.uri} :: orientation - ${state.videoInfo.orientation}")
 
-            if (state.videoInfo.orientation != ORIENTATION.PORTRAIT)
+            if (state.videoInfo.orientation == ORIENTATION.LANDSCAPE)
                 ChangeScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 
             Surface {
@@ -93,8 +93,17 @@ fun ChangeScreenOrientation(orientation: Int) {
 }
 
 @Composable
-fun EnableSystemUi(show: Boolean) {
+fun EnableSystemUi() {
     val context = LocalContext.current
+    DisposableEffect(key1 = Unit) {
+        enableSystemUi(show = false, context = context)
+        onDispose {
+            enableSystemUi(show = true, context = context)
+        }
+    }
+}
+
+fun enableSystemUi(show: Boolean, context: Context) {
     context.findActivity()?.let {
         if (show) it.actionBar?.show() else it.actionBar?.hide()
 
