@@ -19,15 +19,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vpvn.mediaplayer.R
 
 @Composable
 fun MusicScreen(onItemClick: (String, String) -> Unit) {
-    val viewModel: MusicViewModel = hiltViewModel()
+    val viewModel: MusicDirectoryViewModel = hiltViewModel()
     val directoryList = viewModel.musicDirectoriesLiveData.observeAsState().value
     directoryList?.let { MusicDirectoriesList(directories = it, onItemClick) }
 }
@@ -51,7 +53,7 @@ fun MusicDirectoriesList(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Media",
+                    text = stringResource(id = R.string.media),
                     color = Color.Black,
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
@@ -85,8 +87,8 @@ fun MusicDirectoryCardItem(
             .clickable { onItemClick(name, path) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(5.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        RowContent(name, "$count audios")
+        RowContent(title = name, subTitle = stringResource(id = R.string.audios, count))
     }
 }

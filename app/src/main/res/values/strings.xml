@@ -2,4 +2,17 @@
     <string name="app_name">TVX Player</string>
     <string name="loading">Loading…</string>
     <string name="video_loading_failed">oops, video loading failed</string>
+    <string name="media">Media</string>
+    <string name="videos">%d videos</string>
+    <string name="audios">%d audios</string>
+    <string name="permission_grant_audio_video">Please grant audio and video permissions for listing media files</string>
+    <string name="permission_grant_audio">Please grant audio permission for listing audio files</string>
+    <string name="permission_grant_video">Please grant video permission for listing video files</string>
+    <string name="permission_granted">All Permission Granted</string>
+    <string name="permission_request">Request for permission</string>
+    <string name="permissions">Permissions</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="permission">Permission</string>
+    <string name="we_have_video_and_audio_permission">We have video and audio permission</string>
 </resources>

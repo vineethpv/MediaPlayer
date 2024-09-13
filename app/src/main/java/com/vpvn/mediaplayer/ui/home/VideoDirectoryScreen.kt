@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,7 @@ data class MediaDirectory(
 
 @Composable
 fun HomeScreen(onItemClick: (String, String) -> Unit) {
-    val viewModel: HomeViewModel = hiltViewModel()
+    val viewModel: VideoDirectoryViewModel = hiltViewModel()
     val directoryList = viewModel.mediaDirectoriesLiveData.observeAsState().value
     directoryList?.let { MediaDirectoriesList(directories = it, onItemClick) }
 }
@@ -62,7 +64,7 @@ fun MediaDirectoriesList(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Media",
+                    text = stringResource(id = R.string.media),
                     color = Color.Black,
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
@@ -97,9 +99,9 @@ fun DirectoryCardItem(
             .clickable { onItemClick(name, path) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(5.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        RowContent(name, "$count videos")
+        RowContent(title = name, subTitle = stringResource(id = R.string.videos, count))
     }
 }
 

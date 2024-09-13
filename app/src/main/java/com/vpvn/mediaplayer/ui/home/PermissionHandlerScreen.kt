@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
+import com.vpvn.mediaplayer.R
 
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -48,7 +50,7 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
             },
             title = {
                 Text(
-                    text = "Permission",
+                    text = stringResource(R.string.permission),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
@@ -56,11 +58,11 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
             text = {
                 Text(
                     if (multiplePermission.revokedPermissions.size == 2) {
-                        "We need video and audio permission to read media files"
+                        stringResource(id = R.string.permission_grant_audio_video)
                     } else if (multiplePermission.revokedPermissions.first().permission == Manifest.permission.READ_EXTERNAL_STORAGE) {
-                        "We need video permission. Please grant the permission."
+                        stringResource(id = R.string.permission_grant_video)
                     } else {
-                        "We need audio permission. Please grant the permission."
+                        stringResource(id = R.string.permission_grant_audio)
                     },
                     fontSize = 16.sp
                 )
@@ -77,7 +79,7 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
                         startActivity(context, intent, null)
 
                     }) {
-                    Text("OK", style = TextStyle(color = Color.Black))
+                    Text(stringResource(R.string.ok), style = TextStyle(color = Color.Black))
                 }
             },
             dismissButton = {
@@ -85,7 +87,7 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
                     onClick = {
                         showRationalDialog.value = false
                     }) {
-                    Text("Cancel", style = TextStyle(color = Color.Black))
+                    Text(stringResource(R.string.cancel), style = TextStyle(color = Color.Black))
                 }
             },
         )
@@ -93,7 +95,7 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
-            title = { Text(text = "Request Permission", color = Color.White) },
+            title = { Text(text = stringResource(id = R.string.permissions), color = Color.White) },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary
             )
@@ -119,32 +121,32 @@ fun PermissionHandlerScreen(multiplePermission: MultiplePermissionsState) {
                     } else {
                         Toast.makeText(
                             context,
-                            "We have video and audio permission",
+                            context.getString(R.string.we_have_video_and_audio_permission),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }) {
-                    Text(text = "Ask for permission")
+                    Text(text = stringResource(id = R.string.permission_request))
                 }
                 Text(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp),
                     text = if (multiplePermission.allPermissionsGranted) {
-                        "All Permission Granted"
+                        stringResource(id = R.string.permission_granted)
                     } else if (multiplePermission.shouldShowRationale) {
                         // If the user has denied the permission but the rationale can be shown,
                         // then gently explain why the app requires this permission
                         if (multiplePermission.revokedPermissions.size == 2) {
-                            "We need video and audio permission to read media files"
+                            stringResource(id = R.string.permission_grant_audio_video)
                         } else if (multiplePermission.revokedPermissions.first().permission == Manifest.permission.READ_EXTERNAL_STORAGE) {
-                            "We need video permission. Please grant the permission."
+                            stringResource(id = R.string.permission_grant_video)
                         } else {
-                            "We need audio permission. Please grant the permission."
+                            stringResource(id = R.string.permission_grant_audio)
                         }
                     } else {
                         // If it's the first time the user lands on this feature, or the user
                         // doesn't want to be asked again for this permission, explain that the
                         // permission is required
-                        "We need camera and audio permission to shoot video"
+                        stringResource(id = R.string.permission_grant_audio_video)
                     },
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp

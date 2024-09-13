@@ -16,40 +16,40 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MusicViewModel @Inject constructor(
+class VideoDirectoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val _musicDirectoriesLiveData = MutableLiveData(emptyList<MusicDirectory>())
-    val musicDirectoriesLiveData: LiveData<List<MusicDirectory>>
-        get() = _musicDirectoriesLiveData
+    private val _mediaDirectoriesLiveData = MutableLiveData(emptyList<MediaDirectory>())
+    val mediaDirectoriesLiveData: LiveData<List<MediaDirectory>>
+        get() = _mediaDirectoriesLiveData
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _musicDirectoriesLiveData.postValue(getMusicFolders())
+                _mediaDirectoriesLiveData.postValue(getMediaFolders())
             }
         }
     }
 
-    private fun getMusicFolders(): List<MusicDirectory> {
-        val map = mutableMapOf<String, MusicDirectory>()
+    private fun getMediaFolders(): List<MediaDirectory> {
+        val map = mutableMapOf<String, MediaDirectory>()
 
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(MediaStore.Audio.AudioColumns.DATA)
+        val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.Video.VideoColumns.DATA)
         val cursor = context.contentResolver.query(uri, projection, null, null, null)
 
         cursor?.let { cur ->
-            val columnIndexData = cur.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
+            val columnIndexData = cur.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
             while (cur.moveToNext()) {
                 val absolutePath = cur.getString(columnIndexData)
                 val folderName: String = File(absolutePath).parentFile?.name ?: ""
 
                 if (map.containsKey(folderName)) {
-                    with(map.getValue(folderName)) { count += 1 }
+                    with(map.getValue(folderName)) { videoCount += 1 }
                 } else {
                     val folderPath = absolutePath.substringBeforeLast(delimiter = "/")
-                    map[folderName] = MusicDirectory(folderName, 1, folderPath)
+                    map[folderName] = MediaDirectory(folderName, 1, folderPath)
                 }
 
             }
@@ -59,9 +59,3 @@ class MusicViewModel @Inject constructor(
         return map.values.sortedBy { it.folderName }
     }
 }
-
-data class MusicDirectory(
-    val folderName: String,
-    var count: Int,
-    val path: String
-)

@@ -157,8 +157,8 @@ fun VideoCardItem(
             .wrapContentHeight(align = Alignment.CenterVertically)
             .padding(8.dp)
             .clickable { onItemClick(videoFile.url) },
-        shape = RoundedCornerShape(2.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        shape = RoundedCornerShape(5.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -214,7 +214,7 @@ fun Thumbnail(
             alignment = Alignment.Center,
             modifier = Modifier
                 .size(95.dp, 70.dp)
-                .clip(RoundedCornerShape(topStart = 2.dp, bottomStart = 2.dp))
+                .clip(RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp))
         )
         Text(
             text = duration,
