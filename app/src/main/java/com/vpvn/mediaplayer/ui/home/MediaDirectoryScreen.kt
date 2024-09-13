@@ -88,7 +88,8 @@ fun DirectoryCardItem(
     name: String,
     path: String,
     count: Int,
-    onItemClick: (String, String) -> Unit) {
+    onItemClick: (String, String) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,28 +99,35 @@ fun DirectoryCardItem(
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier.size(56.dp)
-            )
-            Column {
-                Text(
-                    text = name,
-                    color = Color.Black,
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
-                )
-                Text(
-                    text = "$count videos",
-                    color = Color.Gray,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
-                )
-            }
-        }
+        RowContent(name, "$count videos")
+    }
+}
 
+@Composable
+fun RowContent(title: String, subTitle: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.icon_folder_192),
+            contentDescription = null,
+            alpha = 0.4F,
+            modifier = Modifier
+                .padding(start = 8.dp, top = 6.dp, bottom = 6.dp)
+                .size(56.dp)
+        )
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(
+                text = title,
+                color = Color.Black,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            )
+            Text(
+                text = subTitle,
+                color = Color.Gray,
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
+            )
+        }
     }
 }
