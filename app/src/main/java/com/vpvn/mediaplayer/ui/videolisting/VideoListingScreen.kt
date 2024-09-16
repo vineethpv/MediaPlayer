@@ -210,7 +210,7 @@ fun Thumbnail(
         AsyncImage(
             model = url,
             contentScale = ContentScale.Crop,
-            contentDescription = null,
+            contentDescription = "Thumbnail",
             alignment = Alignment.Center,
             modifier = Modifier
                 .size(95.dp, 70.dp)

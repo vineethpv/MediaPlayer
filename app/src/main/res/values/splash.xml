@@ -4,6 +4,6 @@
     <style name="Theme.Player.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#FFFFFF</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/media3_icon_circular_play</item>
-        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.MediaPlayer</item>
     </style>
 </resources>
