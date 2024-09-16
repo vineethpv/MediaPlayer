@@ -32,7 +32,8 @@ import com.vpvn.mediaplayer.R
 
 @Composable
 fun AudioPlayer(
-    exoPlayer: ExoPlayer
+    exoPlayer: ExoPlayer,
+    audioFile: AudioFile
 ) {
     println("vineeth:: AudioPlayer")
 
@@ -77,6 +78,20 @@ fun AudioPlayer(
                             .size(25.dp)
                     )
                 }
+
+                /*Slider(
+                    value = if (currentPosTemp == 0f) currentMediaProgress else currentPosTemp,
+                    onValueChange = { currentPosTemp = it },
+                    onValueChangeFinished = {
+                        currentMediaProgress = currentPosTemp
+                        currentPosTemp = 0f
+                        onSeekBarPositionChanged(currentMediaProgress.toLong())
+                    },
+                    valueRange = 0f..audioFile.duration.toFloat(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )*/
             }
             HorizontalDivider()
         }

@@ -73,7 +73,7 @@ fun MediaPlayerNavHost(navController: NavHostController) {
                 onBackClick = {
                     navController.navigateUp()
                 },
-                onItemClick = { uri ->
+                onItemClick = { audioFile ->
                     //println("vineeth - AudioFilesScreen: onItemClick -> uri :: $uri")
                     /*navController.navigate(
                         Screen.Player.createRoute(

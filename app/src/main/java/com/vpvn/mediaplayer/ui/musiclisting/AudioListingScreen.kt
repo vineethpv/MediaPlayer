@@ -54,7 +54,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.vpvn.mediaplayer.R
 
-typealias OnAudioItemClick = (String) -> Unit
+typealias OnAudioItemClick = (AudioFile) -> Unit
 
 @Composable
 fun AudioFilesScreen(
@@ -144,9 +144,10 @@ fun AudioFileList(
     var showAudioPlayer by remember {
         mutableStateOf(false)
     }
-    var audioUrl by remember {
-        mutableStateOf("")
-    }
+//    var audioUrl by remember {
+//        mutableStateOf("")
+//    }
+    var audioFileItem by remember { mutableStateOf(audioList[0]) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -172,22 +173,22 @@ fun AudioFileList(
                 }
 
             }
-            items(audioList) { videoFile ->
+            items(audioList) { audioFile ->
                 AudioCardItem(
-                    audioFile = videoFile,
-                    onItemClick = { url ->
-                        audioUrl = url
+                    audioFile = audioFile,
+                    onItemClick = { item ->
+                        audioFileItem = item
                         showAudioPlayer = true
                         //onItemClick(url)
                     })
             }
         }
         if (showAudioPlayer) {
-            println("vineeth - audioUrl ::-> $audioUrl")
-            exoPlayer.setMediaItem(MediaItem.fromUri(audioUrl))
+            println("vineeth - audioUrl ::-> ${audioFileItem.url}")
+            exoPlayer.setMediaItem(MediaItem.fromUri(audioFileItem.url))
             exoPlayer.prepare()
             exoPlayer.play()
-            AudioPlayer(exoPlayer = exoPlayer)
+            AudioPlayer(exoPlayer = exoPlayer, audioFile = audioFileItem)
         }
     }
 }
@@ -204,7 +205,7 @@ fun AudioCardItem(
             .wrapContentHeight(align = Alignment.CenterVertically)
             .padding(8.dp)
             .clickable {
-                onItemClick(audioFile.url)
+                onItemClick(audioFile)
             },
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
