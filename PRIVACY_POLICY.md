@@ -13,9 +13,9 @@ I hereby state, to the best of my knowledge and belief, that I have not programm
 
 ### Explanation of permissions requested in the app
 
-android.permission.READ_EXTERNAL_STORAGE
-android.permission.READ_MEDIA_VIDEO
-android.permission.READ_MEDIA_AUDIO
+android.permission.READ_EXTERNAL_STORAGE  
+android.permission.READ_MEDIA_VIDEO   
+android.permission.READ_MEDIA_AUDIO   
 
 Above listed permissions are required to read media files stored on your device. Read-Only permissions are required for this app to work and it won't be able to delete or alter media files with these permissions.
 
