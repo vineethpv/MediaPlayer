@@ -41,7 +41,14 @@ fun PlayerScreen(
     when (val state = videoInfoState) {
         is VideoPlayerUiState.Success -> {
             println("vineeth - PlayerScreen :: uri - ${state.videoInfo.uri} :: orientation - ${state.videoInfo.orientation}")
-
+            val exoPlayer = remember {
+                ExoPlayer.Builder(context).build().apply {
+                    setMediaItem(MediaItem.fromUri(state.videoInfo.uri))
+                    prepare()
+                    playWhenReady = true
+                    repeatMode = Player.REPEAT_MODE_ONE
+                }
+            }
             if (state.videoInfo.orientation == ORIENTATION.LANDSCAPE)
                 ChangeScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 
@@ -50,14 +57,6 @@ fun PlayerScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val exoPlayer = remember {
-                        ExoPlayer.Builder(context).build().apply {
-                            setMediaItem(MediaItem.fromUri(state.videoInfo.uri))
-                            prepare()
-                            playWhenReady = true
-                            repeatMode = Player.REPEAT_MODE_ONE
-                        }
-                    }
                     PlayerSurface(
                         player = exoPlayer,
                         surfaceType = SURFACE_TYPE_SURFACE_VIEW,

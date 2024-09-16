@@ -25,10 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vpvn.mediaplayer.MEDIA_TYPE
 import com.vpvn.mediaplayer.R
 
 @Composable
-fun MusicScreen(onItemClick: (String, String) -> Unit) {
+fun MusicScreen(onItemClick: OnItemClick) {
     val viewModel: MusicDirectoryViewModel = hiltViewModel()
     val directoryList = viewModel.musicDirectoriesLiveData.observeAsState().value
     directoryList?.let { MusicDirectoriesList(directories = it, onItemClick) }
@@ -37,7 +38,7 @@ fun MusicScreen(onItemClick: (String, String) -> Unit) {
 @Composable
 fun MusicDirectoriesList(
     directories: List<MusicDirectory>,
-    onItemClick: (String, String) -> Unit
+    onItemClick: OnItemClick
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -65,9 +66,9 @@ fun MusicDirectoriesList(
                 name = directory.folderName,
                 path = directory.path,
                 directory.count,
-                onItemClick = { name, path ->
+                onItemClick = { name, path, type ->
                     Log.d("vineeth", "$name clicked")
-                    onItemClick(name, path)
+                    onItemClick(name, path, type)
                 })
         }
     }
@@ -79,12 +80,12 @@ fun MusicDirectoryCardItem(
     name: String,
     path: String,
     count: Int,
-    onItemClick: (String, String) -> Unit) {
+    onItemClick: OnItemClick) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clickable { onItemClick(name, path) }
+            .clickable { onItemClick(name, path, MEDIA_TYPE.AUDIO) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)

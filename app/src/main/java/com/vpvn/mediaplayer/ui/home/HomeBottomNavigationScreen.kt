@@ -6,9 +6,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.vpvn.mediaplayer.MEDIA_TYPE
+
+typealias OnItemClick = (String, String, MEDIA_TYPE) -> Unit
 
 @Composable
-fun HomeBottomNavigationScreen(onItemClick: (String, String) -> Unit) {
+fun HomeBottomNavigationScreen(onItemClick: OnItemClick) {
     val bottomNavController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = bottomNavController) },

@@ -8,7 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.vpvn.mediaplayer.MEDIA_TYPE
 import com.vpvn.mediaplayer.Screen
+import com.vpvn.mediaplayer.ui.musiclisting.AudioFilesScreen
 import com.vpvn.mediaplayer.ui.player.PlayerScreen
 import com.vpvn.mediaplayer.ui.videolisting.VideoFilesScreen
 
@@ -29,13 +31,26 @@ fun MediaPlayerApp() {
 fun MediaPlayerNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeBottomNavigationScreen(onItemClick = { name, path ->
-                navController.navigate(
-                    Screen.VideoListing.createRoute(
-                        directoryName = name,
-                        absolutePath = path
-                    )
-                )
+            HomeBottomNavigationScreen(onItemClick = { name, path, type ->
+                when (type) {
+                    MEDIA_TYPE.VIDEO -> {
+                        navController.navigate(
+                            Screen.VideoListing.createRoute(
+                                directoryName = name,
+                                absolutePath = path
+                            )
+                        )
+                    }
+
+                    MEDIA_TYPE.AUDIO -> {
+                        navController.navigate(
+                            Screen.AudioListing.createRoute(
+                                directoryName = name,
+                                absolutePath = path
+                            )
+                        )
+                    }
+                }
             })
         }
 
@@ -50,6 +65,21 @@ fun MediaPlayerNavHost(navController: NavHostController) {
                             itemUri = uri
                         )
                     )
+                })
+        }
+
+        composable(route = Screen.AudioListing.route) {
+            AudioFilesScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onItemClick = { uri ->
+                    //println("vineeth - AudioFilesScreen: onItemClick -> uri :: $uri")
+                    /*navController.navigate(
+                        Screen.Player.createRoute(
+                            itemUri = uri
+                        )
+                    )*/
                 })
         }
 

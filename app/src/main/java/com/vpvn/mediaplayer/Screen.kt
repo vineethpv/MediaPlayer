@@ -21,6 +21,16 @@ sealed class Screen(
             "videoListing/${directoryName}/${absolutePath.encodeUTF8()}"
     }
 
+    data object AudioListing : Screen(
+        route = "audioListing/{${NavRouteConstants.DIRECTORY_NAME}}/{${NavRouteConstants.ABSOLUTE_PATH}}",
+        navArguments = listOf(
+            navArgument(NavRouteConstants.DIRECTORY_NAME) { type = NavType.StringType },
+            navArgument(NavRouteConstants.ABSOLUTE_PATH) { type = NavType.StringType })
+    ) {
+        fun createRoute(directoryName: String, absolutePath: String) =
+            "audioListing/${directoryName}/${absolutePath.encodeUTF8()}"
+    }
+
     data object Player : Screen(
         route = "player/{${NavRouteConstants.MEDIA_ITEM_URI}}",
         navArguments = listOf(navArgument(NavRouteConstants.MEDIA_ITEM_URI) {
@@ -29,4 +39,8 @@ sealed class Screen(
     ) {
         fun createRoute(itemUri: String) = "player/${itemUri.encodeUTF8()}"
     }
+}
+
+enum class MEDIA_TYPE {
+    VIDEO, AUDIO
 }

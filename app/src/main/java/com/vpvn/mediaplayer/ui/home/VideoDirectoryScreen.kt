@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vpvn.mediaplayer.MEDIA_TYPE
 import com.vpvn.mediaplayer.R
 
 data class MediaDirectory(
@@ -38,7 +39,7 @@ data class MediaDirectory(
 )
 
 @Composable
-fun HomeScreen(onItemClick: (String, String) -> Unit) {
+fun HomeScreen(onItemClick: OnItemClick) {
     val viewModel: VideoDirectoryViewModel = hiltViewModel()
     val directoryList = viewModel.mediaDirectoriesLiveData.observeAsState().value
     directoryList?.let { MediaDirectoriesList(directories = it, onItemClick) }
@@ -47,7 +48,7 @@ fun HomeScreen(onItemClick: (String, String) -> Unit) {
 @Composable
 fun MediaDirectoriesList(
     directories: List<MediaDirectory>,
-    onItemClick: (String, String) -> Unit
+    onItemClick: OnItemClick
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -75,9 +76,9 @@ fun MediaDirectoriesList(
                 name = directory.folderName,
                 path = directory.path,
                 directory.videoCount,
-                onItemClick = { name, path ->
+                onItemClick = { name, path, type ->
                     Log.d("vineeth", "$name clicked")
-                    onItemClick(name, path)
+                    onItemClick(name, path, type)
                 })
         }
     }
@@ -89,13 +90,13 @@ fun DirectoryCardItem(
     name: String,
     path: String,
     count: Int,
-    onItemClick: (String, String) -> Unit
+    onItemClick: OnItemClick
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clickable { onItemClick(name, path) }
+            .clickable { onItemClick(name, path, MEDIA_TYPE.VIDEO) }
             .wrapContentHeight(),
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
