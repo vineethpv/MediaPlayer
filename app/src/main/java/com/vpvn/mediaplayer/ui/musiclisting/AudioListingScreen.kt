@@ -183,6 +183,7 @@ fun AudioFileList(
             }
         }
         if (showAudioPlayer) {
+            println("vineeth - audioUrl ::-> $audioUrl")
             exoPlayer.setMediaItem(MediaItem.fromUri(audioUrl))
             exoPlayer.prepare()
             exoPlayer.play()

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.vpvn.mediaplayer.R
 
@@ -41,6 +42,13 @@ fun AudioPlayer(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             var isPlaying by remember { mutableStateOf(true) }
+            exoPlayer.addListener(
+                object : Player.Listener {
+                    override fun onIsPlayingChanged(value: Boolean) {
+                        isPlaying = value
+                    }
+                }
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
